@@ -1,0 +1,16 @@
+{% load static %}
+
+{% for post in latest_posts %}
+    <div class="post-item">
+        {% if post.image %}
+        <img src="{{post.image.url}}" alt="" class="flex-shrink-0">
+        {% else %}
+        <img src="{% static 'headquarter/img/blog/blog-recent-1.jpg' %}" alt="" class="flex-shrink-0">
+        {% endif %}
+        <div>
+        <h4><a href="{{post.get_absolute_url}}">{{post.title}}</a></h4>
+        <time datetime="2020-01-01">{{post.publish}}</time>
+        </div>
+    </div><!-- End recent post item-->
+{% endfor %}
+

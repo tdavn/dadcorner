@@ -1,0 +1,48 @@
+<section id="comment-form" class="comment-form section">
+    <div class="container">
+
+        <form action="{% url 'headquarter:post_comment' post.id %}" method="post">
+
+        <h4>Post Comment</h4>
+        <p>Your email address will not be published. Required fields are marked * </p>
+        
+        <div class="row">
+            <div class="col-md-6 form-group">
+            {{ form.name.as_field_group }}
+            </div>
+            <div class="col-md-6 form-group">
+            {{ form.email.as_field_group }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col form-group">
+                {{ form.body.as_field_group }}
+                {% csrf_token %}
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+        </div>
+
+        </form>
+
+    </div>
+</section><!-- /Comment Form Section -->
+
+
+
+
+<!-- 
+<h2>Add a new comment</h2>
+<form action="{% url 'headquarter:post_comment' post.id %}" method="post">
+    <div class="left">
+        {{ form.name.as_field_group }}
+    </div>
+    <div class="left">
+        {{ form.email.as_field_group }}
+    </div>
+        {{ form.body.as_field_group }}
+        {% csrf_token %}
+        <p><input type="submit" value="Add comment"></p>
+</form> -->

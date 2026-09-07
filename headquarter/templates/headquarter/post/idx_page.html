@@ -1,0 +1,475 @@
+{% extends "headquarter/base.html" %}
+{% load headquarter_tags %}
+{% load static %}
+
+
+{% block title %}
+Dad's Corner!
+{% endblock %}
+
+{% block content %}
+
+<body class="index-page">
+
+    {% include "headquarter/header.html" with page=posts %}
+
+    <main class="main">
+
+        <!-- Slider Section -->
+        <section id="slider" class="slider section dark-background">
+
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+                <div class="swiper init-swiper">
+
+                <script type="application/json" class="swiper-config">
+                    {
+                    "loop": true,
+                    "speed": 600,
+                    "autoplay": {
+                        "delay": 5000
+                    },
+                    "slidesPerView": "auto",
+                    "centeredSlides": true,
+                    "pagination": {
+                        "el": ".swiper-pagination",
+                        "type": "bullets",
+                        "clickable": true
+                    },
+                    "navigation": {
+                        "nextEl": ".swiper-button-next",
+                        "prevEl": ".swiper-button-prev"
+                    }
+                    }
+                </script>
+
+                <div class="swiper-wrapper">
+                    {% for lesson in featured_posts %}
+                        {% if lesson.image %}
+                            <div class="swiper-slide" style="background-image: url('{{ lesson.image.url }}');">
+                        {% else %}
+                            <div class="swiper-slide" style="background-image: url({% static 'headquarter/img/post-slide-1.jpg'%});">
+                        {% endif %}
+                        <div class="content">
+                            <h2><a href="{{ lesson.get_absolute_url }}">{{ lesson.title }}</a></h2>
+                            <p>{{ lesson.body|markdown|truncatewords:30 }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+
+                <div class="swiper-pagination"></div>
+                </div>
+
+            </div>
+
+        </section><!-- /Slider Section -->
+
+        <!-- Trending Category Section -->
+        <section id="trending-category" class="trending-category section">
+
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+                <div class="container" data-aos="fade-up">
+                    <div class="row g-5">
+                        
+                                <div class="col-lg-4">
+
+                                    <div class="post-entry lg">
+                                        <a href="{{ cat1_featured.get_absolute_url }}">
+                                            {% if cat1_featured.image %}
+                                                <img src="{{ cat1_featured.image.url }}" alt="" class="img-fluid">
+                                            {% else %}
+                                                <img src="{% static 'headquarter/img/post-landscape-1.jpg' %}" alt="" class="img-fluid">
+                                            {% endif %}                         
+                                        </a>
+                                        <div class="post-meta"><span class="date">{{cat1_featured.category}}</span> <span class="mx-1">•</span> <span>{{cat1_featured.publish}}</span></div>
+                                        <h2><a href="{{ cat1_featured.get_absolute_url }}">{{cat1_featured.title}}</a></h2>
+                                        <p class="mb-4 d-block">{{ cat1_featured.body|markdown|truncatewords:50 }}</p>
+
+                                        <div class="d-flex align-items-center author">
+                                        <div class="photo"><img src="{% static 'headquarter/img/person-1.jpg' %}" alt="" class="img-fluid"></div>
+                                        <div class="name">
+                                            <h3 class="m-0 p-0">{{ cat1_featured.author}}</h3>
+                                        </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                        <div class="col-lg-8">
+                            <div class="row g-5">
+                                <div class="col-lg-4 border-start custom-border">
+                                    {% for post in cat1_next31 %}
+                                        <div class="post-entry">
+                                            <a href="{{ post.get_absolute_url }}">
+                                                {% if post.image %}
+                                                <img src="{{ post.image.url }}" alt="" class="img-fluid"></a>
+                                                {% else %}
+                                                <img src="{% static 'headquarter/img/post-landscape-2.jpg' %}" alt="" class="img-fluid"></a>
+                                                {% endif %}
+                                            <div class="name"><span class="date"></span> <span class="mx-1">•</span> <span class="post-meta">{{ post.publish }}</span></div>
+                                            <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+                                        </div> 
+                                    {% endfor %}
+
+                                </div>
+                                <div class="col-lg-4 border-start custom-border">
+                                     {% for post in cat1_next32 %}
+                                        <div class="post-entry">
+                                            <a href="{{ post.get_absolute_url }}">
+                                                {% if post.image %}
+                                                <img src="{{ post.image.url }}" alt="" class="img-fluid"></a>
+                                                {% else %}
+                                                <img src="{% static 'headquarter/img/post-landscape-4.jpg' %}" alt="" class="img-fluid"></a>
+                                                {% endif %}
+                                            <div class="name"><span class="date"></span> <span class="mx-1">•</span> <span class="post-meta">{{ post.publish }}</span></div>
+                                            <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+                                        </div> 
+                                    {% endfor %}
+
+                                </div>
+
+                                <!-- Trending Section -->
+                                <div class="col-lg-4">
+
+                                    <div class="trending">
+                                        <h3>Hottest!!</h3>
+ 
+                                        {% get_most_commented_posts as most_commented_posts %}
+                                        <ul class="trending-post">
+                                            {% for post in most_commented_posts %}
+                                            <li>
+                                                <a href="{{post.get_absolute_url}}">
+                                                <span class="number">{{ forloop.counter }}</span>
+                                                <h3>{{ post.title}}</h3>
+                                                <span class="author">{{ post.author }}</span>
+                                                </a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+
+                                </div> <!-- End Trending Section -->
+                            </div>
+                        </div>
+
+                    </div> <!-- End .row -->
+                </div>
+
+            </div>
+
+        </section><!-- /Trending Category Section -->
+
+        <!-- Culture, History & Society Category Section -->
+        <section id="culture-category" class="culture-category section">
+
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <div class="section-title-container d-flex align-items-center justify-content-between">
+            <h2>{{cat2_featured.category}}</h2>
+            <p><a href="{{ cat2_featured.category.get_absolute_url }}">See All</a></p>
+            </div>
+        </div><!-- End Section Title -->
+
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+            <div class="row">
+                <div class="col-md-9">
+
+                    <div class="d-lg-flex post-entry">
+                        <a href="{{ cat2_featured.get_absolute_url }}" class="me-4 thumbnail mb-4 mb-lg-0 d-inline-block">
+                            {% if cat2_featured.image %}
+                                <img src="{{ cat2_featured.image.url }}" alt="" class="img-fluid">
+                            {% else %}
+                                <img src="{% static 'headquarter/img/post-landscape-6.jpg' %}" alt="" class="img-fluid">
+                            {% endif %}
+                        </a>
+                        <div>
+                            <div class="post-meta"><span class="date"></span> <span class="mx-1">•</span> <span>{{ cat2_featured.publish }}</span></div>
+                            <h3><a href="{{cat2_featured.get_absolute_url }}">{{cat2_featured.title}}</a></h3>
+                            <p>{{cat2_featured.body|markdown|truncatewords:30}}</p>
+                            <div class="d-flex align-items-center author">
+                            <div class="photo"><img src="{% static 'headquarter/img/person-2.jpg' %}" alt="" class="img-fluid"></div>
+                            <div class="name">
+                                <h3 class="m-0 p-0"> {{ cat2_featured.author }}</h3>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="post-list border-bottom">
+                                <a href="{{ cat2_col41.get_absolute_url }}">
+                                    {% if cat2_col41.image %}
+                                    <img src="{{cat2_col41.image.ur}}" alt="" class="img-fluid"></a>
+                                    {% else %}
+                                    <img src="{% static 'headquarter/img/post-landscape-1.jpg' %}" alt="" class="img-fluid"></a>
+                                    {% endif %}
+                                <div class="post-meta"><span class="date"></span> <span class="mx-1">•</span> <span>{{cat2_col41.publish}}</span></div>
+                                <h2 class="mb-2"><a href="cat2_col41.get_absolute_url">{{ cat2_col41.title }}</a></h2>
+                                <span class="author mb-3 d-block">{{ cat2_col41.author }}</span>
+                                <p class="mb-4 d-block"> {{cat2_col41.body|markdown|truncatewords:30}}</p>
+                            </div>
+
+                            <!-- <div class="post-list">
+                            <div class="post-meta"><span class="date"></span> <span class="mx-1">•</span> <span>{{cat2_col42.publish}}</span></div>
+                            <h2 class="mb-2"><a href="{{cat2_col42.get_absolute.url}}">{{cat2_col42.title}}</a></h2>
+                            <span class="author mb-3 d-block">{{cat2_col42.author}}</span>
+                            </div> -->
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="post-list">
+                            <a href="{{cat2_col8.get_absolute_url}}">
+                                {% if cat2_col8.image %}
+                                <img src="{{cat2_col8.image.url}}" alt="" class="img-fluid"></a>
+                                {% else %}
+                                <img src="{% static 'headquarter/img/post-landscape-2.jpg' %}" alt="" class="img-fluid"></a>
+                                {% endif %}
+                            <div class="post-meta"><span class="date"></span> <span class="mx-1">•</span> <span>{{cat2_col8.publish}}</span></div>
+                            <h2 class="mb-2"><a href="{{ cat2_col8.get_absolute_ure}}">{{cat2_col8.title}}</a></h2>
+                            <span class="author mb-3 d-block">{{cat2_col8.author}}</span>
+                            <p class="mb-4 d-block">{{cat2_col8.body|markdown|truncatewords:30}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    {% for post in cat2_col3 %}
+                    <div class="post-list border-bottom">
+                        <div class="post-meta"><span class="date"></span> <span class="mx-1">•</span> <span>{{post.publish}}</span></div>
+                        <h2 class="mb-2"><a href="{{post.get_absolute_url}}">{{post.title}}</a></h2>
+                        <span class="author mb-3 d-block">{{post.author}}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+            </div>
+
+        </div>
+
+        </section><!-- /Culture Category Section -->
+
+        <!-- Business Category Section -->
+        <section id="business-category" class="business-category section">
+
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <div class="section-title-container d-flex align-items-center justify-content-between">
+            <h2>{{cat3_featured.category}}</h2>
+            <p><a href="{{cat3_featured.category.get_absolute_url}}">See All</a></p>
+            </div>
+        </div><!-- End Section Title -->
+
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+            <div class="row">
+            <div class="col-md-9 order-md-2">
+
+                <div class="d-lg-flex post-entry">
+                    <a href="{{cat3_featured.get_abolute_url}}" class="me-4 thumbnail d-inline-block mb-4 mb-lg-0">
+                        {% if cat3_featured.image %}
+                        <img src="{{cat3_featured.image.url}}" alt="" class="img-fluid">
+                        {% else %}
+                        <img src="{% static 'headquarter/img/post-landscape-3.jpg' %}" alt="" class="img-fluid">
+                        {% endif %}
+                        
+                    </a>
+                    <div>
+                        <div class="post-meta"><span class="date"></span> <span class="mx-1">•</span> <span>{{cat3_featured.publish}}</span></div>
+                        <h3><a href="{{cat3_featured.get_absolute_url}}">{{cat3_featured.title}}</a></h3>
+                        <p>{{cat3_featured.body|markdown|truncatewords:30}}</p>
+                        <div class="d-flex align-items-center author">
+                        <div class="photo"><img src="{% static 'headquarter/img/person-4.jpg' %}" alt="" class="img-fluid"></div>
+                        <div class="name">
+                            <h3 class="m-0 p-0">{{cat3_featured.author}}</h3>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="post-list border-bottom">
+                        <a href="{{cat3_col4.get_absolute_url}}">
+                            {% if cat3_col4.image %}
+                                <img src="{{cat3_col4.image.url}}" alt="" class="img-fluid"></a>
+                            {% else %}
+                                <img src="{% static 'headquarter/img/post-landscape-5.jpg' %}" alt="" class="img-fluid"></a>
+                            {% endif %}
+                            
+                        <div class="post-meta"><span class="date"></span> <span class="mx-1">•</span> <span>{{cat3_col4.publish}}</span></div>
+                        <h2 class="mb-2"><a href="{{ cat3_col4.get_absolute_url}}">{{cat3_col4.title}}</a></h2>
+                        <span class="author mb-3 d-block">{{cat3_col4.author}}</span>
+                        <p class="mb-4 d-block">{{cat3_col4.body|markdown|truncatewords:30}}</p>
+                        </div>
+
+                        <!-- <div class="post-list">
+                        <div class="post-meta"><span class="date">Business</span> <span class="mx-1">•</span> <span>Jul 5th '22</span></div>
+                        <h2 class="mb-2"><a href="blog-details.html">5 Great Startup Tips for Female Founders</a></h2>
+                        <span class="author mb-3 d-block">Jenny Wilson</span>
+                        </div> -->
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="post-list">
+                        <a href="{{cat3_col8.get_absolute_url}}">
+                            {% if cat3_col8.image %}
+                            <img src="{{cat3_col8.image.url}}" alt="" class="img-fluid"></a>
+                            {% else %}
+                            <img src="{% static 'headquarter/img/post-landscape-7.jpg' %}" alt="" class="img-fluid"></a>
+                            {% endif %}
+                            
+                        <div class="post-meta"><span class="date"></span> <span class="mx-1">•</span> <span>{{cat3_col8.publish}}</span></div>
+                        <h2 class="mb-2"><a href="{{cat3_col8.get_absolute.url}}">{{cat3_col8.title}}</a></h2>
+                        <span class="author mb-3 d-block">{{cat3_col8.author}}</span>
+                        <p class="mb-4 d-block">{{cat3_col8.body|markdown|truncatewords:30}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                {% for post in cat3_for %}
+                <div class="post-list border-bottom">
+                <div class="post-meta"><span class="date"></span> <span class="mx-1">•</span> <span>{{post.publish}}</span></div>
+                <h2 class="mb-2"><a href="{{post.get_absolute_url}}">{{post.title}}</a></h2>
+                <span class="author mb-3 d-block">{{post.author}}</span>
+                </div>
+
+                <!-- <div class="post-list border-bottom">
+                <div class="post-meta"><span class="date">Business</span> <span class="mx-1">•</span> <span>Jul 5th '22</span></div>
+                <h2 class="mb-2"><a href="blog-details.html">17 Pictures of Medium Length Hair in Layers That Will Inspire Your New Haircut</a></h2>
+                <span class="author mb-3 d-block">Jenny Wilson</span>
+                </div>
+
+                <div class="post-list border-bottom">
+                <div class="post-meta"><span class="date">Business</span> <span class="mx-1">•</span> <span>Jul 5th '22</span></div>
+                <h2 class="mb-2"><a href="blog-details.html">9 Half-up/half-down Hairstyles for Long and Medium Hair</a></h2>
+                <span class="author mb-3 d-block">Jenny Wilson</span>
+                </div>
+
+                <div class="post-list border-bottom">
+                <div class="post-meta"><span class="date">Business</span> <span class="mx-1">•</span> <span>Jul 5th '22</span></div>
+                <h2 class="mb-2"><a href="blog-details.html">Life Insurance And Pregnancy: A Working Mom’s Guide</a></h2>
+                <span class="author mb-3 d-block">Jenny Wilson</span>
+                </div>
+
+                <div class="post-list border-bottom">
+                <div class="post-meta"><span class="date">Business</span> <span class="mx-1">•</span> <span>Jul 5th '22</span></div>
+                <h2 class="mb-2"><a href="blog-details.html">The Best Homemade Masks for Face (keep the Pimples Away)</a></h2>
+                <span class="author mb-3 d-block">Jenny Wilson</span>
+                </div>
+
+                <div class="post-list border-bottom">
+                <div class="post-meta"><span class="date">Business</span> <span class="mx-1">•</span> <span>Jul 5th '22</span></div>
+                <h2 class="mb-2"><a href="blog-details.html">10 Life-Changing Hacks Every Working Mom Should Know</a></h2>
+                <span class="author mb-3 d-block">Jenny Wilson</span>
+                </div> -->
+                {% endfor %}
+            </div>
+            </div>
+
+        </div>
+
+        </section><!-- /Business Category Section -->
+
+        <!-- Lifestyle Category Section -->
+        <section id="lifestyle-category" class="lifestyle-category section">
+
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <div class="section-title-container d-flex align-items-center justify-content-between">
+            <h2>{{cat4_featured.category}}</h2>
+            <p><a href="{{cat4_featured.category.get_absolute_url}}">See All</a></p>
+            </div>
+        </div><!-- End Section Title -->
+
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+            <div class="row g-5">
+            <div class="col-lg-4">
+                <div class="post-list lg">
+                <a href="{{cat4_featured.get_absolute_url}}">
+                    {% if cat4_featured.image %}
+                    <img src="{{cat4_featured.image.url}}" alt="" class="img-fluid"></a>
+                    {% else %}
+                    <img src="{% static 'headquarter/img/post-landscape-8.jpg' %}" alt="" class="img-fluid"></a>
+                    {% endif %}
+                    
+                <div class="post-meta"><span class="date"></span> <span class="mx-1">•</span> <span>{{cat4_featured.publish}}</span></div>
+                <h2><a href="{{cat4_featured.get_absolute_url}}">{{cat4_featured.title}}</a></h2>
+                <p class="mb-4 d-block">{{cat4_featured.body|markdown|truncatewords:50}}</p>
+
+                <div class="d-flex align-items-center author">
+                    <div class="photo"><img src="{% static 'headquarter/img/person-7' %}.jpg" alt="" class="img-fluid"></div>
+                    <div class="name">
+                    <h3 class="m-0 p-0">{{cat4_featured.author}}</h3>
+                    </div>
+                </div>
+                </div>
+                {% for post in cat4_col41 %}
+                <div class="post-list border-bottom">
+                <div class="post-meta"><span class="date"></span> <span class="mx-1">•</span> <span>{{post.publish}}</span></div>
+                <h2 class="mb-2"><a href="{{post.get_absolute_url}}">{{post.title}}</a></h2>
+                <span class="author mb-3 d-block">{{post.author}}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="col-lg-8">
+                <div class="row g-5">
+                <div class="col-lg-4 border-start custom-border">
+                    {% for post in cat4_col2 %}
+                    <div class="post-list">
+                    <a href="{{post.get_absolute_url}}">
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" alt="" class="img-fluid"></a>
+                        {% else %}
+                            <img src="{% static 'headquarter/img/post-landscape-6.jpg' %}" alt="" class="img-fluid"></a>
+                        {% endif %}
+                    <div class="post-meta"><span class="date"></span> <span class="mx-1">•</span> <span>{{post.publish}}</span></div>
+                    <h2><a href="{{post.get_absolute_url}}">{{post.title}}</a></h2>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="col-lg-4 border-start custom-border">
+                    {% for post in cat4_col3 %}
+                    
+                    <div class="post-list">
+                    <a href="{{post.get_absolute_url}}">
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" alt="" class="img-fluid"></a>
+                        {% else %}
+                            <img src="{% static 'headquarter/img/post-landscape-7.jpg' %}" alt="" class="img-fluid"></a>
+                        {% endif %}
+                    <div class="post-meta"><span class="date"></span> <span class="mx-1">•</span> <span>{{post.publish}}</span></div>
+                    <h2><a href="{{post.get_absolute_url}}">{{post.title}}</a></h2>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="col-lg-4">
+                    {% for post in cat4_col4 %}
+                    <div class="post-list border-bottom">
+                    <div class="post-meta"><span class="date"></span> <span class="mx-1">•</span> <span>{{post.publish}}</span></div>
+                    <h2 class="mb-2"><a href="{{post.get_absolute_url}}">{{post.title}}</a></h2>
+                    <span class="author mb-3 d-block">{{post.author}}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                </div>
+            </div>
+
+            </div>
+
+        </div>
+
+        </section><!-- /Lifestyle Category Section -->
+
+    </main>
+
+{% endblock %}

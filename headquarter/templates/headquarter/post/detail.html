@@ -1,0 +1,244 @@
+{% extends "headquarter/base.html" %}
+{% load headquarter_tags %}
+{% load static %}
+
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<body class="single-post-page">
+
+{% include "headquarter/header.html" with page=posts %}
+
+  <main class="main">
+
+    <!-- Page Title -->
+    <div class="page-title">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <!-- <h1 class="mb-2 mb-lg-0">Single Post</h1> -->
+        <nav class="breadcrumbs">
+          <ol>
+            <li><a href="{% url 'headquarter:idx_page' %}">Home</a></li>
+            <li class="current"><a href="{{post.category.get_absolute_url}}">{{post.category}}</a></li>
+          </ol>
+        </nav>
+      </div>
+    </div><!-- End Page Title -->
+
+    <div class="container">
+      <div class="row">
+
+        <div class="col-lg-8">
+
+          <!-- Blog Details Section -->
+          <section id="blog-details" class="blog-details section">
+            <div class="container">
+
+              <article class="article">
+                {% if post.image %}
+                <div class="post-img">
+                
+                  <img src="{{post.image.url}}" alt="" class="img-fluid">
+                </div>
+                {% endif %}
+                <h2 class="title">{{post.title}}</h2>
+
+                <div class="meta-top">
+                  <ul>
+                    <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="#">{{post.author}}</a></li>
+                    <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <time datetime="2020-01-01">{{post.publish}}</time></li>
+                    <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="#comments">{{comments.count}}</a></li>
+                  </ul>
+                </div><!-- End meta top -->
+
+                <div class="content">
+                    
+                    {{post.body|markdown}}
+
+                </div><!-- End post content -->
+
+                <div class="meta-bottom">
+                  <i class="bi bi-folder"></i>
+                  <ul class="cats">
+                    <li><a href="{{post.category.get_absolute_url}}">{{post.category}}</a></li>
+                  </ul>
+
+                  <i class="bi bi-tags"></i>
+                  <ul class="tags">
+                    {% for tag in post.tags.all %}
+                    
+                        <a href="{% url 'headquarter:post_list_by_tag' tag.slug %}">
+                        {{ tag.name }}
+                        </a>{% if not forloop.last %}, {% endif %}
+                                                
+                    
+                    {% endfor %}
+                    <!-- <li><a href="#">Creative</a></li>
+                    <li><a href="#">Tips</a></li>
+                    <li><a href="#">Marketing</a></li> -->
+                  </ul>
+                </div><!-- End meta bottom -->
+
+              </article>
+
+            </div>
+          </section><!-- /Blog Details Section -->
+
+          <!-- Blog Comments Section -->
+          <section id="blog-comments" class="blog-comments section">
+
+            <div class="container">
+
+                <h4 id="comments" class="comments-count">Comments ({{comments.count}})</h4>
+                {% for comment in comments %}
+                <div id="comment-1" class="comment">
+                    <div class="d-flex">
+                    <!-- <div class="comment-img"><img src="assets/img/blog/comments-1.jpg" alt=""></div> -->
+                    <div>
+                        <h5><a href="">{{comment.name}}</a> <a href="#comment_reply_form" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                        <time datetime="2020-01-01">{% if comment.updated %}{{comment.updated}}{% else %} {{comment.created}}{% endif %}</time>
+                        <p>
+                        {{comment.body}}
+                        </p>
+                    </div>
+                    </div>
+                </div><!-- End comment #1 -->
+                {% endfor %}
+
+            </div>
+
+          </section><!-- /Blog Comments Section -->
+
+          <!-- Comment Form Section -->
+            <div id="comment_reply_form">
+            {% include "headquarter/post/includes/comment_form.html" %}
+            </div>
+        </div>
+
+        <div class="col-lg-4 sidebar">
+
+          <div class="widgets-container">
+
+            <!-- Blog Author Widget -->
+            <div class="blog-author-widget widget-item">
+
+              <div class="d-flex flex-column align-items-center">
+                <div class="d-flex align-items-center w-100">
+                  <img src="{% static 'headquarter/img/blog/blog-author.jpg' %}" class="rounded-circle flex-shrink-0" alt="">
+                  <div>
+                    <h4>{{post.author}}</h4>
+                    <div class="social-links">
+                      <a href="https://x.com/#"><i class="bi bi-twitter-x"></i></a>
+                      <a href="https://facebook.com/#"><i class="bi bi-facebook"></i></a>
+                      <a href="https://instagram.com/#"><i class="biu bi-instagram"></i></a>
+                      <a href="https://instagram.com/#"><i class="biu bi-linkedin"></i></a>
+                    </div>
+                  </div>
+                </div>
+
+                <p>
+                  "Quo vadis?"
+                </p>
+
+              </div>
+
+            </div><!--/Blog Author Widget -->
+
+            <!-- Search Widget -->
+            <div class="search-widget widget-item">
+
+              <h3 class="widget-title">Search</h3>
+              <form action="">
+                <input type="text">
+                <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+              </form>
+
+            </div><!--/Search Widget -->
+
+            <!-- Recent Posts Widget -->
+            <div class="recent-posts-widget widget-item">
+
+              <h3 class="widget-title">Similar Posts</h3>
+                {% for post in similar_posts %}
+                <div class="post-item">
+                    {% if post.image %}
+                    <img src="{{post.image.url}}" alt="" class="flex-shrink-0">
+                    {% else %}
+                    <img src="{% static 'headquarter/img/blog/blog-recent-1.jpg' %}" alt="" class="flex-shrink-0">
+                    {% endif %}                   
+                    <div>
+                    <h4><a href="{{post.get_absolute_url}}">{{post.title}}</a></h4>
+                    <time datetime="2020-01-01">{{post.publish}}</time>
+                    </div>
+                </div><!-- End recent post item-->
+                {% empty %}
+                    There are no similar posts yet.
+                {% endfor%} 
+
+            </div><!--/Recent Posts Widget -->
+
+            <!-- Tags Widget -->
+            <div class="tags-widget widget-item">
+
+              <h3 class="widget-title">Common Tags</h3>
+              <ul>
+                {% for tag in tag_cloud_tags %}
+                <li><a href="{% url 'headquarter:post_list_by_tag' tag.slug %}">{{ tag.name }}</a></li>
+                {% empty %}
+                <p>No tags available.</p>
+                {% endfor %}
+              </ul>
+
+            </div><!--/Tags Widget -->
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+
+    <!-- <h1>{{ post.title }}</h1>
+    <p class="date">
+    Published {{ post.publish }} by {{ post.author }}
+    </p>
+    {% if post.image %}
+        <div class="image main"><img src="{{ post.imgage.url }}" alt="" /></div>
+    {% else %} -->
+        <!-- <div class="image main"><img src="{% static 'bananagarden/images/pic01.jpg' %}" alt="" /></div> -->
+         <!-- <p>image holder</p>
+    {% endif %}
+        
+    {{ post.body|markdown }}
+
+    <h2>Similar posts</h2>
+        {% for post in similar_posts %}
+        <p>
+        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        </p>
+        {% empty %}
+        There are no similar posts yet.
+        {% endfor %}
+    {% with comments.count as total_comments %}
+        <h2>
+        {{ total_comments }} comment{{ total_comments|pluralize }}
+        </h2>
+    {% endwith %}
+    {% for comment in comments %}
+        <div class="comment">
+            <p class="info">
+            Comment {{ forloop.counter }} by {{ comment.name }}
+            {{ comment.created }}
+            </p>
+            {{ comment.body|linebreaks }}
+        </div>
+        {% empty %}
+        <p>There are no comments.</p>
+    {% endfor %}
+
+{% endblock %} -->
+
+

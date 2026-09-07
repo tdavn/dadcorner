@@ -1,0 +1,185 @@
+{% extends "headquarter/base.html" %}
+{% load headquarter_tags %}
+{% load static %}
+
+
+{% block title %}
+{% if category %}{{ category.name }}{% else %}Posts{% endif %}
+{% endblock %}
+
+{% block content %}
+    <body class="category-page">
+
+        {% include "headquarter/header.html" with page=posts %}
+
+        <main class="main">
+
+            <!-- Page Title -->
+            <div class="page-title position-relative">
+                <div class="container d-lg-flex justify-content-between align-items-center">
+                    <h1 class="mb-2 mb-lg-0">{{category}}</h1>
+                    <!-- <nav class="breadcrumbs">
+                    <ol>
+                        <li><a href="index.html">Home</a></li>
+                        <li class="current">Categories</li>
+                    </ol>
+                    </nav> -->
+                </div>
+            </div><!-- End Page Title -->
+
+            <div class="container">
+            <div class="row">
+
+                <div class="col-lg-8">
+
+                <!-- Blog Posts Section -->
+                <section id="blog-posts" class="blog-posts section">
+
+                    <div class="container">
+                        <div class="row gy-4">
+                            {% for post in posts %}
+                            <div class="col-lg-6">
+                                
+                                <article class="position-relative h-100">
+
+                                    <div class="post-img position-relative overflow-hidden">
+                                    {% if post.image %}
+                                    <img src="{{ post.image.url }}" class="img-fluid" alt="">
+                                    {% else %}
+                                    <img src="{% static 'headquarter/img/blog/blog-1.jpg' %}" class="img-fluid" alt="">
+                                    {% endif %}
+                                    <span class="post-date">{{post.publish}}</span>
+                                    </div>
+
+                                    <div class="post-content d-flex flex-column">
+
+                                        <h3 class="post-title">{{post.title}}</h3>
+
+                                        <div class="meta d-flex align-items-center">
+                                            <!-- <div class="d-flex align-items-center">
+                                            <i class="bi bi-person"></i> <span class="ps-2">John Doe</span>
+                                            </div> -->
+                                            <!-- <span class="px-3 text-black-50">/</span> -->
+                                            <!-- <div class="d-flex align-items-center"> -->
+                                            <i class="bi-tags"></i> 
+                                            <span class="ps-2">
+                                                {% for tag in post.tags.all %}
+                                                <a href="{% url 'headquarter:post_list_by_tag' tag.slug %}">
+                                                {{ tag.name }}
+                                                </a>{% if not forloop.last %}, {% endif %}
+                                                {% endfor %}
+                                                </span>
+                                            <!-- </div> -->
+                                        </div>
+
+                                        {{post.body|markdown|truncatewords:30}}
+
+                                        <hr>
+
+                                        <a href="{{post.get_absolute_url}}" class="readmore stretched-link"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
+
+                                    </div>
+
+                                </article>
+                                
+                            </div><!-- End post list item -->
+                            {% endfor %}
+
+
+                        </div>
+                    </div>
+
+                </section><!-- /Blog Posts Section -->
+
+                <!-- Blog Pagination Section -->
+
+                {% include "headquarter/pagination.html" with page=posts %}
+
+                <!-- <section id="blog-pagination" class="blog-pagination section">
+
+                    <div class="container">
+                    <div class="d-flex justify-content-center">
+                        <ul>
+                        <li><a href="#"><i class="bi bi-chevron-left"></i></a></li>
+                        <li><a href="#">1</a></li>
+                        <li><a href="#" class="active">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li>...</li>
+                        <li><a href="#">10</a></li>
+                        <li><a href="#"><i class="bi bi-chevron-right"></i></a></li>
+                        </ul>
+                    </div>
+                    </div>
+
+                </section> -->
+                <!-- /Blog Pagination Section -->
+
+                </div>
+
+                <div class="col-lg-4 sidebar">
+
+                <div class="widgets-container">
+
+                    <!-- Blog Author Widget 2 -->
+                    <div class="blog-author-widget-2 widget-item">
+
+                    <div class="d-flex flex-column align-items-center">
+                        <img src="{% static 'headquarter/img/blog/blog-author.jpg' %}" class="rounded-circle flex-shrink-0" alt="">
+                        <h4>Jane Smith</h4>
+                        <div class="social-links">
+                        <a href="https://x.com/#"><i class="bi bi-twitter-x"></i></a>
+                        <a href="https://facebook.com/#"><i class="bi bi-facebook"></i></a>
+                        <a href="https://instagram.com/#"><i class="biu bi-instagram"></i></a>
+                        <a href="https://instagram.com/#"><i class="biu bi-linkedin"></i></a>
+                        </div>
+
+                        <p>
+                        Itaque quidem optio quia voluptatibus dolorem dolor. Modi eum sed possimus accusantium. Quas repellat voluptatem officia numquam sint aspernatur voluptas. Esse et accusantium ut unde voluptas.
+                        </p>
+
+                    </div>
+                    </div><!--/Blog Author Widget 2 -->
+
+                    <!-- Search Widget -->
+                    <div class="search-widget widget-item">
+
+                    <h3 class="widget-title">Search</h3>
+                    <form action="">
+                        <input type="text">
+                        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+                    </form>
+
+                    </div><!--/Search Widget -->
+
+                    <!-- Recent Posts Widget -->
+                    <div class="recent-posts-widget widget-item">
+                          
+                        <h3 class="widget-title">Recent Posts</h3>
+                        {% show_latest_posts 5 %} 
+                    </div><!--/Recent Posts Widget -->
+
+                    <!-- Tags Widget -->
+                    <div class="tags-widget widget-item">
+
+                    <h3 class="widget-title">Common Tags</h3>
+                    <ul>
+                        {% for tag in tag_cloud_tags %}
+                        <li><a href="{% url 'headquarter:post_list_by_tag' tag.slug %}">{{ tag.name }}</a></li>
+                        {% empty %}
+                        <p>No tags available.</p>
+                        {% endfor %}
+                    </ul>
+
+                    </div><!--/Tags Widget -->
+
+                </div>
+
+                </div>
+
+            </div>
+            </div>
+
+        </main>
+
+{% endblock %}
