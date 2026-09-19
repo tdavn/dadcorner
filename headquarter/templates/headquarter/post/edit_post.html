@@ -1,0 +1,29 @@
+{% extends "headquarter/base.html" %}
+{% load headquarter_tags %}
+{% load static %}
+
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<body class="single-post-page">
+
+{% include "headquarter/header.html" with page=posts %}
+
+    <main class="main">
+
+
+        <div class="container">
+            <h2>Edit Blog Post: {{ post.title }}</h2>
+            
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Update Post</button>
+                <a href="{{ post.get_absolute.url }}" class="btn btn-secondary">Cancel</a>
+                
+            </form>
+        </div>
+    </main>
+
+{% endblock %}

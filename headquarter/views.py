@@ -1,9 +1,11 @@
 # from django.views.generic import ListView
 from django.db.models import Count
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
-from .forms import CommentForm
+from django.contrib import messages
+from django.urls import reverse_lazy
+from .forms import CommentForm, PostForm
 from django.http import Http404
 from .models import Post, Category
 from taggit.models import Tag
@@ -93,7 +95,7 @@ def idx_page(request):
 
 
 
-def post_detail(request, year, month, day, post):
+def post_detail(request, slug):
     # try:
     #     post = Post.published.get(id=id)
     # except Post.DoesNotExist:
@@ -101,10 +103,12 @@ def post_detail(request, year, month, day, post):
     post = get_object_or_404(
         Post,  
         status=Post.Status.PUBLISHED,
-        slug=post,
-        publish__year=year,
-        publish__month=month,
-        publish__day=day)
+        slug=slug
+        # ,
+        # publish__year=year,
+        # publish__month=month,
+        # publish__day=day)
+    )
     # List of active comments for this post
     comments = post.comments.filter(active=True)
     # Form for users to comment
@@ -132,3 +136,41 @@ def post_comment(request, post_id):
         # Save the comment to the database
         comment.save()
     return render(request, 'headquarter/post/comment.html', {'post': post, 'form': form, 'comment': comment})
+
+
+# def edit_post(request, pk):
+#     # Fetch the specific post or throw a 404 error
+#     post = get_object_or_404(Post, pk=pk)
+    
+#     if request.method == 'POST':
+#         # Pass the submitted data and bind it to the existing post instance
+#         form = PostForm(request.POST, request.FILES or None, instance=post)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Your blog post has been updated!')
+#             return redirect('post_detail', pk=post.pk)
+#     else:
+#         # GET request: Pre-populate form with existing post data
+#         form = PostForm(instance=post)
+        
+#     return render(request, 'blog/edit_post.html', {'form': form, 'post': post})
+
+
+def edit_post(request, slug):
+    # Fetch the specific post or throw a 404 error
+    post = get_object_or_404(Post,
+                             slug=slug
+                             )
+    
+    if request.method == 'POST':
+        # Pass the submitted data and bind it to the existing post instance
+        form = PostForm(request.POST, request.FILES or None, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your blog post has been updated!')
+            return redirect('headquarter:post_detail', slug=post.slug)
+    else:
+        # GET request: Pre-populate form with existing post data
+        form = PostForm(instance=post)
+        
+    return render(request, 'headquarter/post/edit_post.html', {'form': form, 'post': post})

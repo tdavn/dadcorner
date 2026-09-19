@@ -54,7 +54,9 @@
                 <div class="content">
                     
                     {{post.body|markdown}}
-
+                  {% if user.is_authenticated %}
+                  <p><a href="{% url 'headquarter:edit_post' slug=post.slug %}" class="btn btn-warning">Edit Post</a></p>
+                  {% endif %}
                 </div><!-- End post content -->
 
                 <div class="meta-bottom">
@@ -200,45 +202,6 @@
 
   </main>
 
-
-    <!-- <h1>{{ post.title }}</h1>
-    <p class="date">
-    Published {{ post.publish }} by {{ post.author }}
-    </p>
-    {% if post.image %}
-        <div class="image main"><img src="{{ post.imgage.url }}" alt="" /></div>
-    {% else %} -->
-        <!-- <div class="image main"><img src="{% static 'bananagarden/images/pic01.jpg' %}" alt="" /></div> -->
-         <!-- <p>image holder</p>
-    {% endif %}
-        
-    {{ post.body|markdown }}
-
-    <h2>Similar posts</h2>
-        {% for post in similar_posts %}
-        <p>
-        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
-        </p>
-        {% empty %}
-        There are no similar posts yet.
-        {% endfor %}
-    {% with comments.count as total_comments %}
-        <h2>
-        {{ total_comments }} comment{{ total_comments|pluralize }}
-        </h2>
-    {% endwith %}
-    {% for comment in comments %}
-        <div class="comment">
-            <p class="info">
-            Comment {{ forloop.counter }} by {{ comment.name }}
-            {{ comment.created }}
-            </p>
-            {{ comment.body|linebreaks }}
-        </div>
-        {% empty %}
-        <p>There are no comments.</p>
-    {% endfor %}
-
-{% endblock %} -->
+{% endblock %}
 
 

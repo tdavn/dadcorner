@@ -54,7 +54,7 @@ class Post(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('headquarter:post_detail', args=[self.publish.year, self.publish.month, self.publish.day, self.slug])
+        return reverse('headquarter:post_detail', args=[self.slug])
 
 
 class Comment(models.Model):
