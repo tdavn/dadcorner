@@ -1,0 +1,35 @@
+{% extends "kitchen/base.html" %}
+{% load static %}
+
+{% block title %}Add a comment{% endblock %}
+
+
+{% block content %}
+
+
+<main class="main">
+    {% if comment %}
+        <div class="page-title">
+            <div class="container d-lg-flex justify-content-between align-items-center">
+                <h1 class="mb-2 mb-lg-0">Your comment has been added.</h1>
+            </div>
+        </div>
+        <!-- Starter Section Section -->
+    <section id="starter-section" class="starter-section section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <div class="section-title-container d-flex align-items-center justify-content-between">
+          <!-- Still no idea why get_absolute_url returns a wrong string?????????????? -->
+          <!-- <h2><a href="{{ dish.get_absolute_url }}">Back to the post</a></h2> -->
+          <h2><a href="#">Back to the post</a></h2>
+        </div>
+      </div><!-- End Section Title -->
+    {% else %}
+    {% include "kitchen/dish/includes/comment_form.html" %}
+    {% endif %}
+    </section><!-- /Starter Section Section -->
+ 
+</main>   
+<br><br><br>
+{% endblock %}

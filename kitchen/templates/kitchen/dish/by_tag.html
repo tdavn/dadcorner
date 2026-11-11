@@ -1,0 +1,126 @@
+{% extends "kitchen/base.html" %}
+{% load static %}
+
+{% block title %}
+{% if tag %}{{ tag.name }}{% else %}Enjoyed!{% endif %}
+{% endblock %}
+
+{% block content %}        
+        
+        
+        <main class="main">
+
+            <!-- Page Title -->
+            <div class="page-title position-relative">
+                <div class="container d-lg-flex justify-content-between align-items-center">
+                    <h1 class="mb-2 mb-lg-0">Dish with "{{tag.name}}"</h1>
+                    <!-- <nav class="breadcrumbs">
+                    <ol>
+                        <li><a href="index.html">Home</a></li>
+                        <li class="current">Categories</li>
+                    </ol>
+                    </nav> -->
+                </div>
+            </div><!-- End Page Title -->
+
+            <div class="container">
+            <div class="row">
+
+                <div class="col-lg-8">
+
+                    <!-- Dish Posts Section -->
+                    <section id="blog-posts" class="blog-posts section">
+
+                        <div class="container">
+                            <div class="row gy-4">
+                                {% for post in posts %}
+                                <div class="col-lg-6">
+                                    
+                                    <article class="position-relative h-100">
+
+                                        <div class="post-img position-relative overflow-hidden">
+                                        {% if post.image %}
+                                        <img src="{{ post.image.url }}" class="img-fluid" alt="">
+                                        {% else %}
+                                        <img src="{% static 'headquarter/img/blog/blog-1.jpg' %}" class="img-fluid" alt="">
+                                        {% endif %}
+                                        <span class="post-date">{{post.updated}}</span>
+                                        </div>
+
+                                        <div class="post-content d-flex flex-column">
+
+                                            <h3 class="post-title">{{post.name}}</h3>
+
+                                            <div class="meta d-flex align-items-center">
+                                                <!-- <div class="d-flex align-items-center">
+                                                <i class="bi bi-person"></i> <span class="ps-2">John Doe</span>
+                                                </div> -->
+                                                <!-- <span class="px-3 text-black-50">/</span> -->
+                                                <!-- <div class="d-flex align-items-center"> -->
+                                                <i class="bi-tags"></i> 
+                                                <span class="ps-2">
+                                                    {% for tag in post.tags.all %}
+                                                    <a href="{% url 'kitchen:post_list_by_tag' tag.slug %}">
+                                                    {{ tag.name }}
+                                                    </a>{% if not forloop.last %}, {% endif %}
+                                                    {% endfor %}
+                                                    </span>
+                                                <!-- </div> -->
+                                            </div>
+
+                                            {{post.intro|truncatewords:30}}
+
+                                            <hr>
+
+                                            <a href="{{post.get_absolute_url}}" class="readmore stretched-link"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
+
+                                        </div>
+
+                                    </article>
+                                    
+                                </div><!-- End post list item -->
+                                {% endfor %}
+
+
+                            </div>
+                        </div>
+
+                    </section><!-- /Dish Posts Section -->
+
+                    <!-- List Pagination Section -->
+
+                    {% include "kitchen/pagination.html" with page=posts %}
+
+
+
+                </div>
+
+                <div class="col-lg-4 sidebar">
+
+                    <div class="widgets-container">
+
+
+                        <!-- Tags Widget -->
+                        <div class="tags-widget widget-item">
+
+                            <h3 class="widget-title">Other Common Ingredients</h3>
+                            <ul>
+                                {% for tag in ingredients %}
+                                <li><a href="{% url 'kitchen:post_list_by_tag' tag.slug %}">{{ tag.name }}</a></li>
+                                {% empty %}
+                                <p>No tags available.</p>
+                                {% endfor %}
+                            </ul>
+
+                        </div><!--/Tags Widget -->
+
+                    </div>
+
+                </div>
+
+            </div>
+            </div>
+
+        </main>
+
+{% endblock %}  

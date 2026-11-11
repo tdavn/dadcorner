@@ -1,0 +1,64 @@
+{% extends "kitchen/base.html" %}
+{% load static %}
+
+{% block title %}
+Your Menu
+{% endblock %}
+
+{% block content %}
+    <h1>Your menu</h1>
+    <table class="cart">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Dish</th>
+                <th>Quantity</th>
+                <th>Remove</th>
+                <th>Unit calory</th>
+                <th>Calory</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in menu %}
+            {% with dish=item.dish %}
+            <tr>
+                <td>
+                    <a href="{{ dish.get_absolute_url }}">
+                    <img src="{% if dish.image %}{{ dish.image.url }}
+                    {% else %}{% static 'kitchen/img/no_image.png' %}{% endif %}">
+                    </a>
+                </td>
+                <td>{{ dish.name }}</td>
+                <td>
+                    <form action="{% url 'menu:menu_add' dish.id %}" method="post">
+                        {{ item.update_quantity_form.quantity }}
+                        {{ item.update_quantity_form.override }}
+                        <input type="submit" value="Update">
+                        {% csrf_token %}
+                    </form>
+                </td>
+                <td>
+                    <form action="{% url 'menu:menu_remove' dish.id %}"
+                    method="post">
+                    <input type="submit" value="Remove">
+                    {% csrf_token %}
+                    </form>
+                </td>
+                <td class="num">${{ item.calories }}</td>
+                <td class="num">${{ item.total_calories }}</td>
+            </tr>
+            {% endwith %}
+            {% endfor %}
+            <tr class="total">
+                <td>Total</td>
+                <td colspan="4"></td>
+                <td class="num">${{ menu.get_total_calories }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="text-right">
+        <a href="{% url 'kitchen:dish_list' %}" class="button
+        light">Continue browsing</a>
+        <a href="#" class="button">Checkout</a>
+    </p>
+{% endblock %}

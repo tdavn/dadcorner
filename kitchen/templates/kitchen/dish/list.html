@@ -1,0 +1,61 @@
+{% extends "kitchen/base.html" %}
+{% load static %}
+
+{% block title %}
+{% if category %}{{ category.name }}{% else %}Dishes{% endif %}
+{% endblock %}
+
+{% block content %}
+
+  <main class="main">
+
+    <!-- Page Title -->
+    <div class="page-title position-relative">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">Category</h1>
+      </div>
+    </div><!-- End Page Title -->  
+
+    <div class="container">
+      <div class="row">
+            <div class="col-lg-4 sidebar">
+                <div class="widgets-container">
+                    <ul>
+                        <li {% if not category %}class="selected"{% endif %}>
+
+                        <a href="{% url 'kitchen:dish_list' %}">All</a>
+                        </li>
+                        {% for c in categories %}
+                        <li {% if category.slug == c.slug %}class="selected"
+                        {% endif %}>
+                        <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul> 
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="container">
+                    <h1>{% if category %}{{ category.name }}{% else %}Dishes{% endif %}</h1>
+                    <div class="dish-list-widget widget-item">
+                        <ul>
+                        {% for dish in dishes %}
+                            <li>
+                            <div class="post-item">
+                                <a href="{{ dish.get_absolute_url }}">
+                                <img src="{% if dish.image %}{{ dish.image.url }}{% else %}{% static 'kitchen/img/no_image.png' %}{% endif %}">
+                                </a>
+                                <h4><a href="{{ dish.get_absolute_url }}">{{ dish.name }}</a></h4>
+                            </div>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+      </div>
+    </div>
+  </main>
+
+
+{% endblock %}

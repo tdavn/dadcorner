@@ -1,0 +1,308 @@
+{% extends "kitchen/base.html" %}
+{% load dish_tags %}
+{% load taggit_templatetags2_tags %}
+{% load static %}
+
+{% block title %}
+{{ dish.name }}
+{% endblock %}
+
+{% block content %}
+
+
+{% include 'kitchen/page_nav.html' %} 
+  <main class="main">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Dish Details Section -->
+                <section id="dish-details" class="dish-details section">
+                    <div class="container">
+
+                        <article class="article">
+                            {% if dish.image %}
+                                <div class="post-img">
+                                
+                                <img src="{{dish.image.url}}" alt="" class="img-fluid">
+                                </div>
+                            {% endif %}
+                            <h2 class="title">{{dish.name}}</h2>
+
+                            <div class="meta-top">
+                                <ul>
+                                    <li class="d-flex align-items-center"><i class="bi bi-person"></i><a href="#">{{dish.author}}</a></li>
+                                    <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <time datetime="2020-01-01">{{dish.created}}</time></li>
+                                    <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="#comments">{{comments.count}}</a></li>
+                                </ul>
+                            </div><!-- End meta top -->
+
+                            <!-- Dish Summary Widget -->
+                            <div class="dish-author-widget widget-item">
+
+                                <div class="d-flex flex-column align-items-center">
+                                    <h3 style="text-decoration: underline;">Summary</h3>
+                                    <div class="d-flex align-items-center w-100">
+                                        <div>
+                                            <p>Main Ingredients: <strong>
+                                            <span>
+                                                {% for tag in dish.tags.all %}
+                                                
+                                                    <a href="{% url 'kitchen:post_list_by_tag' tag.slug %}">
+                                                    {{ tag.name }}
+                                                    </a>{% if not forloop.last %}, {% endif %}
+                                                                            
+                                                
+                                                {% endfor %}
+                                            </span></strong></p>
+                                            <p>Preparation time: <strong>{{ dish.prep }}</strong></p>
+                                            <p>Calory: <strong>{{ dish.calories }}</strong> <small>(per serving)</small></p>
+                                            <p>Category: <strong><a href="{{ dish.category.get_absolute_url }}">{{ dish.category }}</a></strong></p>
+                                        </div>
+                                    </div>
+                                    
+                                    <p>
+                                    "Yummy and Healthy"
+                                    </p>
+
+                                </div>
+
+                            </div><!--/Dish Summary Widget -->
+
+                            <!-- Ingredients -->
+                            <div class="content">
+                                <div class="row">
+                                <h3 class="title">Ingredients and Materials</h3>
+                                {{dish.ingredients|markdown}}
+                                </div>
+                            </div>
+                            <!-- End Ingredients -->
+                            
+                            
+                            <!-- Recipe container -->
+                            <div class="content">
+                                <div class="row">
+                                    <h3 class="title">Recipe</h3>
+                                    {{dish.recipe|markdown}}
+                                    <!-- {% if user.is_authenticated %}
+                                    <p><a href="#" class="btn btn-warning">Edit Post</a></p>
+                                    {% endif %} -->
+                                </div>
+                            </div><!-- End Recipe -->
+
+
+  <!-- ========== GALLERY SECTION ========= -->
+  <section id="gallery" class="py-5">
+    <div class="container">
+      <div class="text-center mb-5" data-aos="fade-up">
+        <span class="slbl">Dish Showcase</span>
+        <h2 class="stitle">Let's See Our <span>Dish</span></h2>
+        <div class="sline"></div>
+      </div>
+
+      {% if gallery_items %}
+      <div class="ggrid" data-aos="fade-up" data-aos-delay="100">
+        {% for item in gallery_items %}
+          <div class="gitem"
+               data-gi="{{ forloop.counter0 }}"
+               data-gimg="{{ item.image.url }}"
+               data-gtitle="{{ item.title|escape }}"
+               data-gdesc="{{ item.description|default:''|escape }}">
+            <img src="{{ item.image.url }}" alt="{{ item.alt }}" loading="lazy" />
+            <div class="gover">
+              <span><i class="fas fa-expand-alt"></i> {{ item.title }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      {% else %}
+        <div class="text-center py-5" data-aos="fade-up">
+          <p class="text-muted">No gallery items yet. Add some in the <a href="/admin/">admin</a>.</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- ========== POPUP GALLERY ========= -->
+  <div id="galPop">
+    <div class="gpbox">
+      <button class="gpclose" id="gpClose" type="button" aria-label="Close">
+        <i class="fas fa-times"></i>
+      </button>
+      <img id="gpImg" src="" alt="" />
+      <div class="gpcap">
+        <h5 id="gpTitle"></h5>
+        <p id="gpDesc"></p>
+      </div>
+      <div class="gpnav">
+        <button id="gpPrev" type="button">
+          <i class="fas fa-chevron-left me-1"></i>Prev
+        </button>
+        <button id="gpNext" type="button">
+          Next <i class="fas fa-chevron-right ms-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+                            <div class="meta-bottom">
+                            <i class="bi bi-folder"></i>
+                            <ul class="cats">
+                                <li><a href="{{dish.category.get_absolute_url}}">{{dish.category}}</a></li>
+                            </ul>
+
+                            <i class="bi bi-tags"></i>
+                            <ul class="tags">
+                                {% for tag in dish.tags.all %}
+                                
+                                    <a href="{% url 'kitchen:post_list_by_tag' tag.slug %}">
+                                    {{ tag.name }}
+                                    </a>{% if not forloop.last %}, {% endif %}
+                                                            
+                                
+                                {% endfor %}
+
+                            </ul>
+                            </div><!-- End meta bottom -->
+
+                        </article>
+
+                    </div>
+                </section><!-- /dish Details Section -->
+
+                <!-- Dish Comments Section -->
+                <section id="dish-comments" class="dish-comments section">
+
+                    <div class="container">
+                        <!-- {% with comments.count as total_comments %}
+                        <h2>{{ total_comments }} comment{{ total_comments|pluralize }}</h2>
+                        {% endwith %} -->
+
+                        <h4 id="comments" class="comments-count">Comments ({{comments.count}})</h4>
+                        {% for comment in comments %}
+                        <div id="comment-1" class="comment">
+                            <div class="d-flex">
+                            <!-- <div class="comment-img"><img src="assets/img/blog/comments-1.jpg" alt=""></div> -->
+                            <div>
+                                <h5><a href="">{{comment.name}}</a> <a href="#comment_reply_form" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                                <time datetime="2020-01-01">{% if comment.updated %}{{comment.updated}}{% else %} {{comment.created}}{% endif %}</time>
+                                <p>
+                                {{comment.body}}
+                                </p>
+                            </div>
+                            </div>
+                        </div><!-- End comment #1 -->
+                        {% endfor %}
+
+                    </div>
+
+                </section><!-- /Dish Comments Section -->
+
+                <!-- Comment Form Section -->
+                <div id="comment_reply_form">
+                    {% include "kitchen/dish/includes/comment_form.html" %}
+                </div>
+
+            </div>
+
+            <div class="col-lg-4 sidebar">
+                <div class="widgets-container">
+                    <!-- Dish Author Widget -->
+                    <div class="dish-author-widget widget-item">
+
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="d-flex align-items-center w-100">
+                                <img src="{% static 'headquarter/img/blog/blog-author.jpg' %}" class="rounded-circle flex-shrink-0" alt="">
+                                <div>
+                                    <h4 class="mb-0">{{dish.author}}</h4>
+                                    <div class="social-links">
+                                        <a href="https://x.com/#"><i class="bi bi-twitter-x"></i></a>
+                                        <a href="https://facebook.com/#"><i class="bi bi-facebook"></i></a>
+                                        <a href="https://instagram.com/#"><i class="biu bi-instagram"></i></a>
+                                        <a href="https://instagram.com/#"><i class="biu bi-linkedin"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p>
+                            "Quo vadis?"
+                            </p>
+
+                        </div>
+
+                    </div><!--/Dish Author Widget -->
+
+ 
+                    <!-- Major Ingredient -->
+                    <!--
+                    <div class="recent-posts-widget widget-item">
+                       <h3 class="widget-title">Main Ingredients</h3>
+                            <ul class="tags">
+                                {% for tag in dish.tags.all %}
+                                    <li>
+                                    <a href="{% url 'kitchen:post_list_by_tag' tag.slug %}">
+                                    {{ tag.name }}
+                                    </a>
+                                    </li>         
+                                {% endfor %}
+
+                            </ul>
+                    </div>       
+                    -->
+                   <!-- Similar Dishes Widget -->
+                    <div class="recent-posts-widget widget-item">
+
+                        <h3 class="widget-title">Similar Dishes</h3>
+                            {% for dish in similar_dishes %}
+                            <div class="post-item">
+                                {% if dish.image %}
+                                <img src="{{dish.image.url}}" alt="" class="flex-shrink-0">
+                                {% else %}
+                                <img src="{% static 'headquarter/img/blog/blog-recent-1.jpg' %}" alt="" class="flex-shrink-0">
+                                {% endif %}                   
+                                <div>
+                                <h4><a href="{{dish.get_absolute_url}}">{{dish.name}}</a></h4>
+                                <time datetime="2020-01-01">{{dish.updated}}</time>
+                                </div>
+                            </div><!-- End recent post item-->
+                            {% empty %}
+                                There are no similar dishes yet.
+                            {% endfor %} 
+
+                    </div><!--/Similar Dishes Widget -->
+
+                    <!--/Recent Posts Widget -->
+
+
+                    <!-- Latest Post Widget -->
+                    <!--
+                    <div class="recent-posts-widget widget-item">
+
+                        <h3 class="widget-title">Recent Updated Dishes</h3>
+                           {% show_latest_posts 3 %} 
+                    </div>
+                    -->
+                    <!--/Recent Posts Widget -->
+
+                    <!-- Tags Widget -->
+                    <div class="tags-widget widget-item">
+
+                    <h3 class="widget-title">Common Ingredients</h3>
+                    {% get_tagcloud as tags for 'kitchen.Dish' %}
+                    <ul>
+                        {% for tag in tags %}
+                        <li><a href="{% url 'kitchen:post_list_by_tag' tag.slug %}">{{ tag.name }}</a>({{ tag.num_times }})</li>
+                        {% empty %}
+                        <p>No tags available.</p>
+                        {% endfor %}
+                    </ul>
+
+                    </div><!--/Tags Widget -->                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+{% endblock %}
